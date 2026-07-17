@@ -16,7 +16,7 @@ license: MIT
 version: 1.0.0
 date-released: "2026-07-17"
 repository-code: "https://github.com/entrance4-png/catatonia-precision-order"
-doi: "<Zenodo concept DOI>"
+doi: "10.5281/zenodo.21405269"
 keywords:
   - catatonia
   - recovery order

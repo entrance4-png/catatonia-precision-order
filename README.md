@@ -1,6 +1,6 @@
 # catatonia-precision-order
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXXX)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21405269.svg)](https://doi.org/10.5281/zenodo.21405269)
 
 Analysis and figure code for
 
@@ -84,7 +84,10 @@ stdout.
 If you use this code, please cite the paper and the archived release:
 
 > Saito, H. catatonia-precision-order: analysis and figure code for "Recovery from catatonia
-> follows a hierarchical precision order". *Zenodo* <https://doi.org/10.5281/zenodo.XXXXXXXX> (2026).
+> follows a hierarchical precision order". *Zenodo* <https://doi.org/10.5281/zenodo.21405269> (2026).
+
+The concept DOI `10.5281/zenodo.21405269` always resolves to the latest version. The current
+release is v1.0.0 (`10.5281/zenodo.21405270`).
 
 ## License
 
