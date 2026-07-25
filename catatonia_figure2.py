@@ -40,11 +40,15 @@ WHAT THE MANUSCRIPT QUOTES, AND WHERE IT COMES FROM
     penalise the hypothesis for a prediction it makes.  The manuscript reports
     both values.
 
-PANEL A SORT ORDER
+PANEL a SORT ORDER
     Rows are ordered by πv_slow ascending, ties broken by πv_fast descending,
     with non-applicable πv_fast last.  This is stated because a reader
     reproducing the panel from a different tie-break will get a different
     picture of the same data.
+
+PANEL LABELS
+    Panels are labelled "a" and "b" in lower case, matching the Fig. 2 legend
+    in the manuscript (Nature style).
 
 LEGEND PLACEMENT
     The legend is placed clear of the data (default).  Pass --legend-inside to
@@ -159,7 +163,7 @@ def figure2(df: pd.DataFrame, out: str = OUT,
     axA.set_ylim(n - 0.5, -0.5)
     axA.set_xlabel("Day from treatment initiation", fontsize=11)
     axA.set_ylabel("Patient (sorted by πv_slow)", fontsize=11)
-    axA.set_title("A  Per-patient recovery milestones",
+    axA.set_title("a  Per-patient recovery milestones",
                   fontsize=12, fontweight="bold", loc="left")
     axA.grid(axis="x", ls=":", color="#cccccc", lw=.8)
     axA.set_axisbelow(True)
@@ -189,7 +193,7 @@ def figure2(df: pd.DataFrame, out: str = OUT,
     axB.set_yticklabels([LABELS[c] for c in DOMAINS], fontsize=11)
     axB.set_ylim(-len(DOMAINS) + 0.55, 0.55)
     axB.set_xlabel("Day from treatment initiation", fontsize=11)
-    axB.set_title("B  Milestone day by domain\n(median |, IQR bar)",
+    axB.set_title("b  Milestone day by domain\n(median |, IQR bar)",
                   fontsize=12, fontweight="bold", loc="left")
     axB.grid(axis="x", ls=":", color="#cccccc", lw=.8)
     axB.set_axisbelow(True)
