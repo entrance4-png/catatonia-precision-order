@@ -1,0 +1,10 @@
+# patient-level milestone sheets are never committed
+*.xlsx
+*.xls
+*.xlsm
+*.csv
+!milestone_template.csv
+!rating_template.csv
+*.png
+__pycache__/
+.ipynb_checkpoints/
