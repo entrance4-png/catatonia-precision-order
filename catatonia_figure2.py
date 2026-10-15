@@ -3,70 +3,87 @@
 """
 catatonia_figure2.py
 ====================
-Reproduces Figure 2 of
+Reproduces Figures 2 and 3 of
 
-    Saito, H., Takizawa, Y., Tateno, A., Arakawa, R. & Tiger, M.
+    Saito, H., Takizawa, Y., Murata, I., Tateno, A., Theorell, J.,
+    Arakawa, R. & Tiger, M.
     "Recovery from catatonia follows a hierarchical precision order."
 
     Fig. 2.  Temporal ordering of recovery milestones across precision
-    domains (n = 25).
+             domains (n = 25).                       [primary coding, H.S.]
+    Fig. 3.  Temporal ordering of recovery milestones in the blinded
+             re-rating (n = 25).                     [blind rating, I.M.]
 
-from the milestone spreadsheet, together with every number the manuscript
-quotes from it.  Nothing is fitted; nothing is simulated.  The script reads
-the recorded milestone days and draws them.
+from the two milestone sheets, together with every number the manuscript
+quotes from them.  Nothing is fitted; nothing is simulated.  The script reads
+the recorded milestone days and draws them.  Both figures are drawn by the
+same function, so the two ratings are shown in an identical format.
 
 HOW TO RUN IT
-    Google Colab / Jupyter
-        Paste this whole file into one cell and run it.  If the workbook is
-        not already in the session an upload dialog opens; choose the .xlsx
-        and the statistics print and the figure is drawn in the cell.
     Command line
-        python catatonia_figure2.py [milestones.xlsx]
-        With no argument the workbook is located automatically (see below).
+        python catatonia_figure2.py primary.xlsx --blind blind.xlsx
+        python catatonia_figure2.py primary.xlsx            (Fig. 2 only)
+        python catatonia_figure2.py                        (auto-locate, see below)
+    Google Colab / Jupyter
+        Paste this whole file into one cell and run it.  If no workbook is in
+        the session an upload dialog opens; choose the primary sheet (and,
+        if you have it, the blind sheet) and the statistics print and the
+        figures are drawn in the cell.
 
 INPUT
-    An .xlsx with one row per patient and the columns
+    One row per patient.  Accepted layouts:
 
-        patient | πs | β | πm | πvfast | πvslow
+      (a) the primary sheet
+            patient | πs | β | πm | πvfast | πvslow
+      (b) the blind rating sheet as returned by the second rater
+            <no.> | <reference date> | πs | β | πm | πv_fast | πv_slow | Pt
 
-    (πv_fast / πv_slow, with or without the underscore, are also accepted;
-    column names are matched ignoring case and surrounding spaces.)
+    Column names are matched ignoring case, surrounding spaces and the
+    underscore in πv_fast / πv_slow.  The patient number is taken from a
+    column named patient, case or Pt, or else from the first column.
+    Cells hold "day6", "DAY6" or a bare integer: the day counted from the
+    onset of catatonic symptoms (day of onset = day 1).  A blank, "NA" or
+    "ND" means the milestone could not be dated and is left missing.
+    Missing values are never imputed and never treated as day zero.  CSV
+    files with the same columns (case, ps, beta, pm, pv_fast, pv_slow, as
+    used by blind_rerating_analysis.py) are accepted as well.
 
-    Cells hold strings of the form "day6"; blank means the domain's baseline
-    disturbance was not documented and the milestone is NOT APPLICABLE (this
-    is the case for πv_fast in three patients, who received an antipsychotic
-    from initiation).  Missing values are never imputed and never treated as
-    day zero.
-
-    The file is looked for in this order: an explicit path; the default name
-    in both NFC and NFD (Japanese file names differ between the two, so an
-    exact-name test can fail on a file that is plainly there); then any single
-    spreadsheet in the working directory, /content, /content/drive/MyDrive or
-    the script's own directory, up to three levels deep.
+    With no arguments the primary workbook is looked for under the default
+    name, in NFC and NFD (Japanese file names differ between the two), then
+    as the single spreadsheet in the working directory, /content,
+    /content/drive/MyDrive or the script's own directory, up to three levels
+    deep.  The blind sheet is only used when passed explicitly or when a
+    file matching BLIND_XLSX is present.
 
 OUTPUT
-    saito_companion_fig2.png          the figure, 300 dpi
-    stdout                            the statistics listed below
-    in a notebook                     the figure, drawn in the cell
+    saito_companion_fig2.png     Fig. 2, 300 dpi (primary coding)
+    saito_companion_fig3.png     Fig. 3, 300 dpi (blind rating), if given
+    stdout                       the statistics listed below, per rating
+    in a notebook                the figures, drawn in the cell
 
 WHAT THE MANUSCRIPT QUOTES, AND WHERE IT COMES FROM
-    Median (IQR), range, per domain      ->  describe()        [Suppl. Table 1]
+    Median (IQR), range, per domain      ->  describe()        [Suppl. Table 4]
     Kendall's W = 0.91, chi2(4) = 80.4   ->  kendalls_w(), tie-CORRECTED,
-                                             complete cases only (n = 22)
-    Adjacent-pair ordering: n, strict    ->  adjacent_pairs()  [Suppl. Table 2]
-    precedence (the order-informative
-    counts 15, 12, 18, 22), same-day
-    ties, inversions, sign-test p
-    Fig. 2, panels a and b               ->  figure2()
+    (primary; 0.89 in the blind rating)      complete cases only (n = 22 / 25)
+    Adjacent-pair ordering: n, strict    ->  adjacent_pairs()  [Suppl. Table 5;
+    precedence (the order-informative        Suppl. Table 7a for the blind rating]
+    counts 15, 12, 18, 22 in the primary
+    coding; 16, 11, 17, 24 in the blind
+    rating), same-day ties, inversions,
+    sign-test p
+    Fig. 2 / Fig. 3, panels a and b      ->  figure()
 
-    The BFCRS severity statistics (Table 2 of the manuscript) are scored from
-    a separate record sheet and are not computed here.
+    The agreement statistics between the two ratings (ICC, Bland-Altman,
+    kappa, tau-b; Suppl. Table 7b) are computed by the pre-registered
+    script blind_rerating_analysis.py, not here.  The BFCRS severity
+    statistics are scored from a separate record sheet and are not computed
+    here.
 
     The tie correction is not cosmetic.  Milestones are integer days and ties
-    are common: without the correction W = 0.82 and chi2 = 72.2.  Ties are
-    permitted by the ordering hypothesis, so deflating W for them would
-    penalise the hypothesis for a prediction it makes.  The manuscript reports
-    both values.
+    are common: without the correction W = 0.82 and chi2 = 72.2 in the
+    primary coding.  Ties are permitted by the ordering hypothesis, so
+    deflating W for them would penalise the hypothesis for a prediction it
+    makes.  The manuscript reports both values.
 
 PANEL a SORT ORDER
     Rows are ordered by πv_slow ascending, ties broken by πv_fast descending,
@@ -75,15 +92,14 @@ PANEL a SORT ORDER
     picture of the same data.
 
 PANEL LABELS
-    Panels are labelled "a" and "b" in lower case, matching the Fig. 2 legend
-    in the manuscript (Nature style).
+    Panels are labelled "a" and "b" in lower case, matching the figure
+    legends in the manuscript (Nature style).
 
 LEGEND PLACEMENT
     The legend is placed clear of the data (default).  Set LEGEND_INSIDE =
     True, or pass --legend-inside on the command line, to reproduce the
     earlier lower-right placement, under which P10's two rightmost points
-    (πv_fast day 40, πv_slow day 42) are hidden.  No number changes either
-    way.
+    are hidden.  No number changes either way.
 
 Requires: pandas, numpy, scipy, matplotlib, openpyxl.  Python >= 3.9.
 All of these are preinstalled in Google Colab.
@@ -106,10 +122,13 @@ from scipy import stats
 # --------------------------------------------------------------------------
 # configuration
 # --------------------------------------------------------------------------
-XLSX = "milestone.xlsx"          # default; any single spreadsheet is accepted
+XLSX = "milestone.xlsx"            # default primary sheet; any single spreadsheet is accepted
+BLIND_XLSX = "murata_day.xlsx"     # default blind sheet, used only if present
 OUT = "saito_companion_fig2.png"
-LEGEND_INSIDE = False            # True reproduces the earlier, data-covering legend
-JITTER_SEED = 20240101           # fixed: panel b jitter must be reproducible
+OUT_BLIND = "saito_companion_fig3.png"
+LEGEND_INSIDE = False              # True reproduces the earlier, data-covering legend
+JITTER_SEED = 20240101             # fixed: panel b jitter must be reproducible
+XLABEL = "Day from symptom onset"  # day of onset = day 1, as in the Methods
 
 DOMAINS = ["πs", "β", "πm", "πvfast", "πvslow"]
 LABELS = {"πs": "πs", "β": "β", "πm": "πm",
@@ -117,6 +136,10 @@ LABELS = {"πs": "πs", "β": "β", "πm": "πm",
 COLOURS = {"πs": "#E69F00", "β": "#56B4E9", "πm": "#009E73",
            "πvfast": "#CC79A7", "πvslow": "#0072B2"}
 PAIRS = [("πs", "β"), ("β", "πm"), ("πm", "πvfast"), ("πvfast", "πvslow")]
+TITLES = {
+    "primary": "Temporal ordering of recovery milestones across precision domains (n={n})",
+    "blind":   "Temporal ordering of recovery milestones in the blinded re-rating (n={n})",
+}
 
 try:                                   # running as a saved script
     _HERE = os.path.dirname(os.path.abspath(__file__))
@@ -126,7 +149,7 @@ except NameError:                      # pasted straight into a notebook cell
 SEARCH_DIRS = list(dict.fromkeys(
     [".", "/content", "/content/drive/MyDrive", _HERE]))
 SKIP_DIRS = {"sample_data", ".config", ".ipynb_checkpoints", "__pycache__"}
-SHEET_EXT = (".xlsx", ".xls", ".xlsm")
+SHEET_EXT = (".xlsx", ".xls", ".xlsm", ".csv")
 
 
 # --------------------------------------------------------------------------
@@ -149,26 +172,36 @@ def in_colab() -> bool:
         return False
 
 
-def spreadsheet_args(argv: list[str]) -> list[str]:
-    """Positional spreadsheet paths from argv.
+def spreadsheet_args(argv: list[str]) -> tuple[list[str], str | None]:
+    """Positional spreadsheet paths and the --blind path from argv.
 
     Flags are ignored, as is the "-f <kernel.json>" pair that Jupyter and
     Colab place in sys.argv; without this the kernel connection file would be
     mistaken for the input workbook.
     """
-    paths, skip = [], False
+    paths, blind, skip, take_blind = [], None, False, False
     for a in argv:
         if skip:
             skip = False
             continue
+        if take_blind:
+            blind = a
+            take_blind = False
+            continue
         if a in ("-f", "--f"):
             skip = True
+            continue
+        if a == "--blind":
+            take_blind = True
+            continue
+        if a.startswith("--blind="):
+            blind = a.split("=", 1)[1]
             continue
         if a.startswith("-"):
             continue
         if a.lower().endswith(SHEET_EXT):
             paths.append(a)
-    return paths
+    return paths, blind
 
 
 def _scan() -> list[str]:
@@ -189,12 +222,10 @@ def _scan() -> list[str]:
     return sorted(dict.fromkeys(found))
 
 
-def find_workbook(path: str | None = None) -> str:
-    """Locate the milestone workbook, or ask for it when running in Colab."""
-    names = [path] if path else [XLSX]
-    for n in list(names):
-        for form in ("NFC", "NFD"):
-            names.append(unicodedata.normalize(form, n))
+def _lookup(name: str) -> str | None:
+    names = [name]
+    for form in ("NFC", "NFD"):
+        names.append(unicodedata.normalize(form, name))
     for n in names:
         if os.path.exists(n):
             return n
@@ -202,10 +233,19 @@ def find_workbook(path: str | None = None) -> str:
             cand = os.path.join(d, n)
             if os.path.isdir(d) and os.path.exists(cand):
                 return cand
+    return None
+
+
+def find_workbook(path: str | None = None) -> str:
+    """Locate the primary milestone workbook, or ask for it when running in Colab."""
+    hit = _lookup(path or XLSX)
+    if hit:
+        return hit
     if path:                                  # an explicit path was wrong
         raise SystemExit(f"milestone workbook not found: {path!r}")
 
-    found = _scan()
+    found = [f for f in _scan()
+             if os.path.basename(f) != BLIND_XLSX and not f.endswith("_template.csv")]
     if len(found) == 1:
         print(f"[using workbook: {found[0]}]")
         return found[0]
@@ -240,25 +280,44 @@ def find_workbook(path: str | None = None) -> str:
 # --------------------------------------------------------------------------
 # data
 # --------------------------------------------------------------------------
+_CANON = {
+    "πs": "πs", "ps": "πs", "π s": "πs",
+    "β": "β", "beta": "β", "b": "β",
+    "πm": "πm", "pm": "πm", "π m": "πm",
+    "πvfast": "πvfast", "πv_fast": "πvfast", "πv fast": "πvfast", "pv_fast": "πvfast", "pvfast": "πvfast",
+    "πvslow": "πvslow", "πv_slow": "πvslow", "πv slow": "πvslow", "pv_slow": "πvslow", "pvslow": "πvslow",
+    "patient": "patient", "case": "patient", "pt": "patient", "id": "patient",
+}
+
+
 def load(path: str | None = None) -> pd.DataFrame:
-    """Read the sheet and parse 'dayN' -> N.  Blanks stay NaN (not applicable)."""
+    """Read a sheet and parse 'dayN' / 'DAYN' / N -> N.  Blank, NA and ND stay NaN."""
     path = find_workbook(path)
-    df = pd.read_excel(path)
+    if path.lower().endswith(".csv"):
+        df = pd.read_csv(path, encoding="utf-8-sig")
+    else:
+        df = pd.read_excel(path)
 
-    canon = {"πv_fast": "πvfast", "πv fast": "πvfast",
-             "πv_slow": "πvslow", "πv slow": "πvslow"}
-    df = df.rename(columns={c: canon.get(str(c).strip().lower(), str(c).strip())
-                            for c in df.columns})
+    def canon(c) -> str:
+        s = unicodedata.normalize("NFKC", str(c)).strip().lower()
+        return _CANON.get(s, s)
 
+    df = df.rename(columns={c: canon(c) for c in df.columns})
+    df = df.loc[:, ~df.columns.duplicated()]
+
+    if "patient" not in df.columns:           # blind sheet: number is the first column
+        df = df.rename(columns={df.columns[0]: "patient"})
     missing = [c for c in ["patient", *DOMAINS] if c not in df.columns]
     if missing:
         raise ValueError(f"missing columns: {missing}; found {list(df.columns)}")
 
+    df = df[df["patient"].notna()].copy()
     for c in DOMAINS:
-        parsed = df[c].astype(str).str.extract(r"(\d+)", expand=False)
+        txt = df[c].map(lambda v: "" if pd.isna(v) else unicodedata.normalize("NFKC", str(v)))
+        parsed = txt.str.extract(r"(\d+)", expand=False)
         df[c] = pd.to_numeric(parsed, errors="coerce")
-    df["patient"] = df["patient"].astype(int)
-    return df[["patient", *DOMAINS]]
+    df["patient"] = pd.to_numeric(df["patient"], errors="coerce").astype(int)
+    return df[["patient", *DOMAINS]].reset_index(drop=True)
 
 
 def describe(df: pd.DataFrame) -> pd.DataFrame:
@@ -292,7 +351,7 @@ def kendalls_w(df: pd.DataFrame) -> dict:
 
 
 def adjacent_pairs(df: pd.DataFrame) -> pd.DataFrame:
-    """Adjacent-domain ordering, one row per pair (Supplementary Table 2).
+    """Adjacent-domain ordering, one row per pair (Suppl. Table 5 / 7a).
 
     n                    patients in whom both milestones are applicable
     strict precedence    earlier domain reached on a strictly earlier day;
@@ -333,10 +392,12 @@ def sort_for_panel_a(df: pd.DataFrame) -> pd.DataFrame:
 # --------------------------------------------------------------------------
 # figure
 # --------------------------------------------------------------------------
-def figure2(df: pd.DataFrame, out: str = OUT,
-            legend_inside: bool = LEGEND_INSIDE,
-            show: bool | None = None) -> str:
-    """Draw Fig. 2, save it at 300 dpi and, in a notebook, display it."""
+def figure(df: pd.DataFrame, out: str = OUT, kind: str = "primary",
+           legend_inside: bool = LEGEND_INSIDE,
+           show: bool | None = None) -> str:
+    """Draw the two-panel milestone figure, save it at 300 dpi and, in a
+    notebook, display it.  kind = "primary" gives Fig. 2, "blind" gives Fig. 3;
+    the layout is identical."""
     if show is None:
         show = in_notebook()
     ordered = sort_for_panel_a(df)
@@ -344,8 +405,7 @@ def figure2(df: pd.DataFrame, out: str = OUT,
     fig, (axA, axB) = plt.subplots(
         1, 2, figsize=(12.8, 9.4),
         gridspec_kw={"width_ratios": [1.62, 1.0], "wspace": 0.16})
-    fig.suptitle("Temporal ordering of recovery milestones across "
-                 f"precision domains (n={n})",
+    fig.suptitle(TITLES[kind].format(n=n),
                  fontsize=15, fontweight="bold", y=0.965)
 
     for y, (_, row) in enumerate(ordered.iterrows()):
@@ -361,7 +421,7 @@ def figure2(df: pd.DataFrame, out: str = OUT,
     axA.set_yticks(range(n))
     axA.set_yticklabels([f"P{p}" for p in ordered["patient"]], fontsize=9)
     axA.set_ylim(n - 0.5, -0.5)
-    axA.set_xlabel("Day from treatment initiation", fontsize=11)
+    axA.set_xlabel(XLABEL, fontsize=11)
     axA.set_ylabel("Patient (sorted by πv_slow)", fontsize=11)
     axA.set_title("a  Per-patient recovery milestones",
                   fontsize=12, fontweight="bold", loc="left")
@@ -392,7 +452,7 @@ def figure2(df: pd.DataFrame, out: str = OUT,
     axB.set_yticks([-i for i in range(len(DOMAINS))])
     axB.set_yticklabels([LABELS[c] for c in DOMAINS], fontsize=11)
     axB.set_ylim(-len(DOMAINS) + 0.55, 0.55)
-    axB.set_xlabel("Day from treatment initiation", fontsize=11)
+    axB.set_xlabel(XLABEL, fontsize=11)
     axB.set_title("b  Milestone day by domain\n(median |, IQR bar)",
                   fontsize=12, fontweight="bold", loc="left")
     axB.grid(axis="x", ls=":", color="#cccccc", lw=.8)
@@ -411,15 +471,27 @@ def figure2(df: pd.DataFrame, out: str = OUT,
     return out
 
 
+def figure2(df: pd.DataFrame, out: str = OUT, **kw) -> str:
+    """Fig. 2 (primary coding).  Kept for backward compatibility."""
+    return figure(df, out=out, kind="primary", **kw)
+
+
+def figure3(df: pd.DataFrame, out: str = OUT_BLIND, **kw) -> str:
+    """Fig. 3 (blind rating), same layout as Fig. 2."""
+    return figure(df, out=out, kind="blind", **kw)
+
+
 # --------------------------------------------------------------------------
 # report
 # --------------------------------------------------------------------------
-def report(df: pd.DataFrame, legend_inside: bool = LEGEND_INSIDE) -> str:
-    """Print every number the manuscript quotes, then draw the figure."""
+def report(df: pd.DataFrame, kind: str = "primary",
+           legend_inside: bool = LEGEND_INSIDE) -> str:
+    """Print every number the manuscript quotes from one rating, then draw it."""
     line = "=" * 76
+    label = {"primary": "PRIMARY CODING (Fig. 2)", "blind": "BLIND RATING (Fig. 3)"}[kind]
 
     print(line)
-    print("Milestone days, n = %d patients" % len(df))
+    print(f"{label}: milestone days, n = {len(df)} patients")
     print(line)
     d = describe(df)
     for _, r in d.iterrows():
@@ -427,9 +499,12 @@ def report(df: pd.DataFrame, legend_inside: bool = LEGEND_INSIDE) -> str:
               f"median {r['median']:.1f} ({r['q1']:.1f}-{r['q3']:.1f})   "
               f"range {r['min']:.0f}-{r['max']:.0f}")
     na = int((len(df) - d["n applicable"]).max())
-    print(f"\n  πv_fast is NOT APPLICABLE in {na} patients and is left missing.")
-    print("  Setting those to day 0 would manufacture three inversions at the")
-    print("  single pair the ordering hypothesis permits. It is not done here.")
+    if na:
+        print(f"\n  A milestone is NOT APPLICABLE in {na} patients and is left missing.")
+        print("  Setting it to day 0 would manufacture inversions at a pair the")
+        print("  ordering hypothesis permits. It is not done here.")
+    else:
+        print("\n  Every milestone carries a day in every patient.")
 
     print()
     print(line)
@@ -442,12 +517,16 @@ def report(df: pd.DataFrame, legend_inside: bool = LEGEND_INSIDE) -> str:
           f"(chi2 = {w['m'] * (w['k'] - 1) * w['W_uncorrected']:.1f})")
     print(f"  Kendall's W, tie-corrected   = {w['W']:.4f}  "
           f"(chi2({w['df']}) = {w['chi2']:.1f}, p = {w['p']:.2e})")
-    print("  The manuscript reports both: tie-corrected W = 0.91 (uncorrected")
-    print("  0.82), chi2(4) = 80.4, n = 22. Ties are permitted by the hypothesis.")
+    if kind == "primary":
+        print("  The manuscript reports both: tie-corrected W = 0.91 (uncorrected")
+        print("  0.82), chi2(4) = 80.4, n = 22. Ties are permitted by the hypothesis.")
+    else:
+        print("  The manuscript reports the tie-corrected value, W = 0.89 (n = 25),")
+        print("  beside the primary 0.91, without a threshold.")
 
     print()
     print(line)
-    print("Adjacent-domain ordering (Supplementary Table 2)")
+    print("Adjacent-domain ordering (Suppl. Table %s)" % ("5" if kind == "primary" else "7a"))
     print(line)
     ap = adjacent_pairs(df)
     print(f"  {'pair':<20}{'n':>4}{'strict':>8}{'same':>6}{'inv':>5}"
@@ -462,20 +541,28 @@ def report(df: pd.DataFrame, legend_inside: bool = LEGEND_INSIDE) -> str:
     print("  Inversions in any pair: %d." % int(ap["inversion"].sum()))
 
     print()
-    out = figure2(df, legend_inside=legend_inside)
-    print("Figure 2 written to:", os.path.abspath(out))
+    out = figure(df, out=OUT if kind == "primary" else OUT_BLIND, kind=kind,
+                 legend_inside=legend_inside)
+    print(f"Figure {'2' if kind == 'primary' else '3'} written to:", os.path.abspath(out))
     if legend_inside:
-        print("NOTE: with this legend placement, P10's pi_v,fast (day 40) and")
-        print("      pi_v,slow (day 42) fall underneath the legend box.")
+        print("NOTE: with this legend placement the rightmost points of the")
+        print("      slowest patient may fall underneath the legend box.")
+    print()
     return out
 
 
-def main(path: str | None = None) -> None:
-    args = spreadsheet_args(sys.argv[1:])
+def main(path: str | None = None, blind: str | None = None) -> None:
+    args, blind_arg = spreadsheet_args(sys.argv[1:])
     if path is None and args:
         path = args[0]
+    if blind is None:
+        blind = blind_arg or (args[1] if len(args) > 1 else None) or _lookup(BLIND_XLSX)
     legend_inside = LEGEND_INSIDE or ("--legend-inside" in sys.argv)
-    report(load(path), legend_inside=legend_inside)
+    report(load(path), kind="primary", legend_inside=legend_inside)
+    if blind:
+        report(load(blind), kind="blind", legend_inside=legend_inside)
+    else:
+        print("[no blind rating sheet given: Fig. 3 not drawn; pass --blind <sheet>]")
 
 
 if __name__ == "__main__":
