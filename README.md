@@ -18,20 +18,27 @@ every number the manuscript quotes from them.
 plan at Zenodo (doi:10.5281/zenodo.23076104; plan v1.0 fixed on 1 October 2026,
 before any blind rating was returned). It is reproduced here unchanged.
 
-## Running
+## Reproducing the manuscript
+
+The milestone day counts of both raters for every patient, exactly as
+printed in Supplementary Table 7, are included here as
+`supp_table7_primary.csv` (H.S.) and `supp_table7_blind.csv` (I.M.). They
+are the only input the scripts need, so every number in the manuscript that
+comes from the milestone days can be reproduced with two commands:
 
 ```bash
 pip install -r requirements.txt
 
-# Fig. 2 and Fig. 3 with their statistics
-python catatonia_figure2.py milestone.xlsx --blind murata_day.xlsx
+# Fig. 2, Fig. 3 and their statistics (Suppl. Tables 4, 5, 6a)
+python catatonia_figure2.py supp_table7_primary.csv --blind supp_table7_blind.csv
 
-# Fig. 2 only
-python catatonia_figure2.py milestone.xlsx
-
-# pre-registered agreement analysis (SPSS v32 gives the same values)
-python blind_rerating_analysis.py index.csv independent.csv --out report.txt --plots ba_plots
+# pre-registered agreement analysis (Suppl. Tables 6a, 6b; SPSS v32 gives the same values)
+python blind_rerating_analysis.py supp_table7_primary.csv supp_table7_blind.csv --out report.txt --plots ba_plots
 ```
+
+The same commands accept the original workbooks (`milestone.xlsx`,
+`murata_day.xlsx`) in place of the CSVs; the CSVs were produced from those
+workbooks and checked cell by cell against Supplementary Table 7.
 
 `catatonia_figure2.py` can also be pasted whole into a Google Colab or Jupyter
 cell; if no sheet is in the session an upload dialog opens.
@@ -68,13 +75,15 @@ values are printed and both are reported.
 
 ## Data
 
-De-identified milestone day counts (day from symptom onset, both raters, every
-patient) are given in Supplementary Table 7 of the manuscript and are the only
-input these scripts need. The sheets as used in the study carry patient-level
-calendar dates and are not public; they are available from the corresponding
-author on reasonable request, subject to institutional and ethical approval.
-The two template files in this repository carry made-up rows and exist only to
-show the column layout.
+`supp_table7_primary.csv` and `supp_table7_blind.csv` hold the de-identified
+milestone day counts (day from symptom onset, day of onset = day 1; `NA`
+where the baseline disturbance was not documented) for both raters and every
+patient, identical to Supplementary Table 7 of the manuscript. They carry no
+calendar information. The workbooks as used in the study contain
+patient-level calendar dates and are not public; they are available from the
+corresponding author on reasonable request, subject to institutional and
+ethical approval. The two `*_template.csv` files carry made-up rows and exist
+only to show the column layout.
 
 ## Citation
 

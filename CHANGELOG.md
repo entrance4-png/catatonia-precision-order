@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.1.3 — 2026-10-16
+- `supp_table7_primary.csv` and `supp_table7_blind.csv` added: the milestone
+  day counts of both raters for all 25 patients, identical to Supplementary
+  Table 7 (checked cell by cell; no calendar dates). With these the manuscript's
+  figures and statistics reproduce from a clean clone with two commands.
+- README: "Reproducing the manuscript" section; Data section updated.
+- `.gitignore`: the two data CSVs are no longer ignored.
+- No change to either script. Statistics unchanged.
+
 ## v1.1.2 — 2026-10-16
 - README: data statement aligned with the submitted manuscript (de-identified
   day counts for both raters are in Supplementary Table 7; calendar-dated
