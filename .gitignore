@@ -8,3 +8,5 @@
 *.png
 __pycache__/
 .ipynb_checkpoints/
+!supp_table7_primary.csv
+!supp_table7_blind.csv
