@@ -5,6 +5,10 @@
   day counts for both raters are in Supplementary Table 7; calendar-dated
   sheets remain restricted); pre-registered plan, now open at Zenodo, cited
   by its concept DOI (10.5281/zenodo.23076104), as in the manuscript.
+- Code archive cited by its Zenodo concept DOI (10.5281/zenodo.23388109),
+  which resolves to the latest version; the DOI previously given in README
+  and CITATION.cff (10.5281/zenodo.21405269) was wrong.
+- CITATION.cff: version and date updated (was still 1.1.0 at v1.1.1).
 - No change to either script. Statistics unchanged.
 
 ## v1.1.1 — 2026-10-15

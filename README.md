@@ -80,7 +80,7 @@ show the column layout.
 
 Code archive: Saito, H. *catatonia-precision-order: analysis and figure code
 for "Recovery from catatonia follows a hierarchical precision order".* Zenodo
-https://doi.org/10.5281/zenodo.21405269
+https://doi.org/10.5281/zenodo.23388109
 
 Pre-registered plan and `blind_rerating_analysis.py`: Saito, H. *Prespecified
 analysis plan for blinded re-rating of recovery milestones in catatonia.*
