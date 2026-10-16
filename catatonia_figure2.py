@@ -66,7 +66,7 @@ WHAT THE MANUSCRIPT QUOTES, AND WHERE IT COMES FROM
     Kendall's W = 0.91, chi2(4) = 80.4   ->  kendalls_w(), tie-CORRECTED,
     (primary; 0.89 in the blind rating)      complete cases only (n = 22 / 25)
     Adjacent-pair ordering: n, strict    ->  adjacent_pairs()  [Suppl. Table 5;
-    precedence (the order-informative        Suppl. Table 7a for the blind rating]
+    precedence (the order-informative        Suppl. Table 6a for the blind rating]
     counts 15, 12, 18, 22 in the primary
     coding; 16, 11, 17, 24 in the blind
     rating), same-day ties, inversions,
@@ -74,7 +74,7 @@ WHAT THE MANUSCRIPT QUOTES, AND WHERE IT COMES FROM
     Fig. 2 / Fig. 3, panels a and b      ->  figure()
 
     The agreement statistics between the two ratings (ICC, Bland-Altman,
-    kappa, tau-b; Suppl. Table 7b) are computed by the pre-registered
+    kappa, tau-b; Suppl. Table 6b) are computed by the pre-registered
     script blind_rerating_analysis.py, not here.  The BFCRS severity
     statistics are scored from a separate record sheet and are not computed
     here.
@@ -351,7 +351,7 @@ def kendalls_w(df: pd.DataFrame) -> dict:
 
 
 def adjacent_pairs(df: pd.DataFrame) -> pd.DataFrame:
-    """Adjacent-domain ordering, one row per pair (Suppl. Table 5 / 7a).
+    """Adjacent-domain ordering, one row per pair (Suppl. Table 5 / 6a).
 
     n                    patients in whom both milestones are applicable
     strict precedence    earlier domain reached on a strictly earlier day;
@@ -526,7 +526,7 @@ def report(df: pd.DataFrame, kind: str = "primary",
 
     print()
     print(line)
-    print("Adjacent-domain ordering (Suppl. Table %s)" % ("5" if kind == "primary" else "7a"))
+    print("Adjacent-domain ordering (Suppl. Table %s)" % ("5" if kind == "primary" else "6a"))
     print(line)
     ap = adjacent_pairs(df)
     print(f"  {'pair':<20}{'n':>4}{'strict':>8}{'same':>6}{'inv':>5}"

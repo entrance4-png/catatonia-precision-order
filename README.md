@@ -11,8 +11,8 @@ every number the manuscript quotes from them.
 
 | Script | Input | Output |
 |---|---|---|
-| `catatonia_figure2.py` | primary milestone sheet; optionally the blind rating sheet (`--blind`) | Fig. 2 (`saito_companion_fig2.png`), Fig. 3 (`saito_companion_fig3.png`), and the per-rating statistics: median (IQR) and range per domain (Suppl. Table 4), tie-corrected and uncorrected Kendall's W, adjacent-pair ordering with strict precedence, same-day ties, inversions and exact sign tests (Suppl. Tables 5 and 7a) |
-| `blind_rerating_analysis.py` | two CSVs, one per rater (`case, ps, beta, pm, pv_fast, pv_slow`) | the pre-registered analysis of the blinded re-rating, sections 4 to 8 of the plan: primary criterion (inversions of the separable transitions), Kendall's W per rater, ICC(A,1), Bland–Altman, Cohen's κ, per-patient Kendall's τ-b (Suppl. Tables 7a, 7b) |
+| `catatonia_figure2.py` | primary milestone sheet; optionally the blind rating sheet (`--blind`) | Fig. 2 (`saito_companion_fig2.png`), Fig. 3 (`saito_companion_fig3.png`), and the per-rating statistics: median (IQR) and range per domain (Suppl. Table 4), tie-corrected and uncorrected Kendall's W, adjacent-pair ordering with strict precedence, same-day ties, inversions and exact sign tests (Suppl. Tables 5 and 6a) |
+| `blind_rerating_analysis.py` | two CSVs, one per rater (`case, ps, beta, pm, pv_fast, pv_slow`) | the pre-registered analysis of the blinded re-rating, sections 4 to 8 of the plan: primary criterion (inversions of the separable transitions), Kendall's W per rater, ICC(A,1), Bland–Altman, Cohen's κ, per-patient Kendall's τ-b (Suppl. Tables 6a, 6b) |
 
 `blind_rerating_analysis.py` is the script deposited with the pre-registered
 plan at Zenodo (doi:10.5281/zenodo.23076104; plan v1.0 fixed on 1 October 2026,
@@ -68,10 +68,13 @@ values are printed and both are reported.
 
 ## Data
 
-The milestone sheets contain patient-level dates and are not public. They are
-available from the corresponding author on reasonable request, subject to
-institutional and ethical approval. The two template files in this repository
-carry made-up rows and exist only to show the column layout.
+De-identified milestone day counts (day from symptom onset, both raters, every
+patient) are given in Supplementary Table 7 of the manuscript and are the only
+input these scripts need. The sheets as used in the study carry patient-level
+calendar dates and are not public; they are available from the corresponding
+author on reasonable request, subject to institutional and ethical approval.
+The two template files in this repository carry made-up rows and exist only to
+show the column layout.
 
 ## Citation
 
